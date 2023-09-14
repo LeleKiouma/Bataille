@@ -1,6 +1,15 @@
 import pygame
 
 class cards () :
-    def __init__ (self,value,sprite_chemin,) :
+    """
+    each card have a value and a sprite
+    """
+    def __init__ (self,value : int,sprite_pathing : str) :
+        """
+            create the card
+        Args:
+            value (int): the value of the card
+            sprite_pathing (str): the file path to the cards sprite
+        """
         self.value = value
-        self.sprite = pygame.transform.smoothscale(pygame.image.load(sprite_chemin).convert_alpha(),(100,152))
+        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))
