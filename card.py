@@ -18,17 +18,17 @@ class Card(object) :
         self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152)) # load the sprite
         
 
-    def __gt__(other: object)->bool:
+    def __gt__(self,card: object)->bool:
         if self.value > card.value:
             return True
         return False
         
-    def __lt__(other: object)->bool:
+    def __lt__(self,card: object)->bool:
         if self.value < card.value:
             return True
         return False
     
-    def __eq__(other: object)->bool:
+    def __eq__(self,card: object)->bool:
         if self.value == card.value:
             return True
         return False
