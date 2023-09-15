@@ -1,24 +1,9 @@
 import pygame
 
-
-TWO = 2
-THREE = 3
-FOUR = 4
-FIVE = 5
-SIX = 6
-SEVEN = 7
-EIGHT = 8
-NINE = 9
-TEN = 10
-JACK = 11
-QUEEN = 12
-KING = 13
-ACE = 14
-
 TYPES = ("clubs",  "diamonds", "hearts", "spades")
-VALUES = {"2": TWO, "3": THREE, "4": FOUR, "5": FIVE, "6": SIX, "7": SEVEN, "8": EIGHT, "9": NINE, "10": TEN, "jack": JACK, "queen": QUEEN, "king": king, "ace": ACE}
+VALUES = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "jack": 11, "queen": 12, "king": 13, "ace": 14}
 
-class card(object) :
+class Card(object) :
     """
     each card have a value and a sprite
     """
@@ -30,8 +15,25 @@ class card(object) :
             sprite_pathing (str): the file path to the cards sprite
         """
         self.value = value
-        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))
+        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152)) # load the sprite
+        
+
+    def __gt__(other: object)->bool:
+        if self.value > card.value:
+            return True
+        return False
+        
+    def __lt__(other: object)->bool:
+        if self.value < card.value:
+            return True
+        return False
+    
+    def __eq__(other: object)->bool:
+        if self.value == card.value:
+            return True
+        return False
 
 
-    def __str__(self)->str:
-        return self.value
+    
+
+
