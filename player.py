@@ -38,8 +38,6 @@ class Player() :
         """
             delete the first card of the deck
         """
-        self.score -= self.list_of_cards[0].value
-        return self.list_of_cards.pop(0)
-    
-
-    
+        if len(self.list_of_cards) != 0 :
+            self.score -= self.list_of_cards[0].value
+            return self.list_of_cards.pop(0)

@@ -15,7 +15,7 @@ class Card(object) :
             sprite_pathing (str): the file path to the cards sprite
         """
         self.value = value
-        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152)) # load the sprite
+        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))# load the sprite
         
 
     def __gt__(self,card: object)->bool:

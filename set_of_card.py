@@ -19,16 +19,17 @@ class Set_of_card(object):
     
     def split_in_two(self, player1: object, player2: object)->None:
         """
-            # ! A FINIR
+            # vide les cartes dans les mains des joueurs ,melange les cartes de la pile de carte a distribué
+            puis ajoute les cartes aléatoirement dans la main d'un des joueurs 
             Parameters:
             ----------
-                player1: (object) the player
+                player1: (object) the player 1
+                plater2: (object) the player 2
             Return:
             ---------
                 nothing
         """
-        player1.list_of_cards.clear()
-        player2.list_of_cards.clear()
+
         self.shuffle()
         for element in self.deck_of_cards :
             self.random_bool = bool(getrandbits(1)) #create a random bool 
@@ -36,5 +37,5 @@ class Set_of_card(object):
                 player1.list_of_cards.append(element) 
             else :
                 player2.list_of_cards.append(element)
-
-        return
+        player1.update_score()
+        player2.update_score()
