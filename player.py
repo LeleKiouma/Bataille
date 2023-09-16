@@ -1,7 +1,7 @@
 
 class Player() :
     """
-    the class player with all the info we need about the player
+    the class player with all the info and methods we need about the player
     """
 
     def __init__(self, y_pos_of_cards: int, y_pos_of_reversed_card: int) :
@@ -28,13 +28,13 @@ class Player() :
     def update_score(self):
         """
             Update the score of a player by adding
-            the value of all cards in his deck
+            the value all cards in his deck
         """
         self.score = 0
         for card in self.list_of_cards:
             self.score += card.value
 
-    def delete_card(self,) :
+    def delete_card(self) -> object:
         """
             delete the first card of the deck
         """
