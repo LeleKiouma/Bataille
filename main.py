@@ -86,7 +86,9 @@ player1 = Player(454,614) #create the player
 player2 = Player(246,86) #create the player
 
 jeux_de_carte = Set_of_card() #create all the card
-jeux_de_carte.split_in_two(player1,player2) 
+#jeux_de_carte.split_in_two(player1,player2) 
+player1.add_card(Card(2,"assets/deck_of_cards/5_of_spades.png"))
+player2.add_card(Card(1,"assets/deck_of_cards/5_of_spades.png"))
 
 # cards_on_table[0] --> card of player 1 on the table, cards_on_table[1] --> card of player 2 on the table
 cards_on_table = [[],[]]
@@ -162,11 +164,12 @@ while True :
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN :
+                #reset all the variable 
                 jeux_de_carte.split_in_two(player1,player2) 
-                show_cards_int = 1
+                show_cards_int = 0
                 who_win = 0
                 game_state = 0
-                
+                cards_on_table[0],cards_on_table[1] = [],[] #clear the list of the cards on table
         screen.blit(background_surf,background_rect) #put the background image
         if game_state == 1 :
             win_sentences_surf = big_font.render("player 1 win !!!",False,(255,255,255))
@@ -177,6 +180,5 @@ while True :
             
         screen.blit(win_sentences_surf,win_sentences_rect)
         screen.blit(play_again_sentence_surf,play_again_sentence_rect)
-
 
     pygame.display.flip() #refreshing the window with new element 
