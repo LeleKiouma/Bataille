@@ -1,4 +1,6 @@
+import doctest
 import pygame
+
 
 TYPES = ("clubs",  "diamonds", "hearts", "spades") #usefull to create all the card
 VALUES = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "jack": 11, "queen": 12, "king": 13, "ace": 14} #usefull to create all the card
@@ -14,14 +16,14 @@ class Card(object) :
             value (int): the value of the card
             sprite_pathing (str): the file path to the cards sprite
         """
-        self.value = value 
-        self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))# load the sprite and scale it down
+        self.value = value  
+        if sprite_pathing is not None : #card wont  be None type but for doctest it's easier to don't use pygame 
+            self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))# load the sprite and scale it down
         
 
     def __gt__(self, card: object)->bool:
         """
-            Check if the current Card is greater than the
-            other card
+            Check if the current Card is greater than the other card
         Args:
         ------
             card: (object) the other card
@@ -29,24 +31,63 @@ class Card(object) :
         ------
             (bool) True if the value of the current card is greater than the other, 
                     False otherwise or if the object is not a Card
+        
+        
+        >>> Card(7,None) > Card(6,None)
+        True
+        >>> Card(5,None) > Card(6,None)
+        False
+        >>> Card(12,None) > 4
+        False
         """
         if not isinstance(card, Card):
             return False
-        if self.value > card.value:
-            return True
-        return False
+        return self.value > card.value
         
-    def __lt__(self,card: object)->bool:
-        if self.value < card.value:
-            return True
-        return False
+    def __lt__(self, card: object)->bool:
+        """
+            Check if the current Card is lower than the other card
+        Args:
+        ------
+            card: (object) the other card
+        Return:
+        ------
+            (bool) True if the value of the current card is lower than the other, 
+                    False otherwise or if the object is not a Card
+        
+        
+        >>> Card(7,None) < Card(6,None)
+        False
+        >>> Card(5,None) < Card(6,None)
+        True
+        >>> Card(12,None) > 4
+        False
+        """
+        if not isinstance(card, Card):
+            return False
+        return self.value < card.value
     
-    def __eq__(self,card: object)->bool:
-        if self.value == card.value:
-            return True
-        return False
+    def __eq__(self, card: object)->bool:
+        """
+            Check if the current Card is equal than the other card
+        Args:
+        ------
+            card: (object) the other card
+        Return:
+        ------
+            (bool) True if the value of the current card is equal than the other, 
+                    False otherwise or if the object is not a Card
+        
+        
+        >>> Card(7,None) == Card(6,None)
+        False
+        >>> Card(5,None) == Card(5,None)
+        True
+        >>> Card(12,None) == 4
+        False
+        """
+        if not isinstance(card, Card):
+            return False
+        return self.value == card.value
 
-
-    
-
-
+doctest.testmod(verbose=True)

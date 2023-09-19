@@ -1,3 +1,4 @@
+from card import *
 
 class Player() :
     """
@@ -22,7 +23,8 @@ class Player() :
         Args:
             card (object): the card to add
         """
-        self.list_of_cards.append(card)
+        if isinstance(card, Card):
+            self.list_of_cards.append(card)
         
 
     def update_score(self):
@@ -36,8 +38,13 @@ class Player() :
 
     def delete_card(self) -> object:
         """
-            delete the first card of the deck
+            delete the first card of the deck and return this card
         """
+        
         if len(self.list_of_cards) != 0 :
             self.score -= self.list_of_cards[0].value
             return self.list_of_cards.pop(0)
+        return None
+
+
+doctest.testmod(verbose=True)

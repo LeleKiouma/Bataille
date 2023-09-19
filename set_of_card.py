@@ -1,5 +1,7 @@
 from card import *
 from random import randint, getrandbits
+import doctest
+doctest.testmod()
 
 class Set_of_card(object):
     """
@@ -7,9 +9,9 @@ class Set_of_card(object):
     """
     def __init__(self):
         self.deck_of_cards = []
-        for type_int in range(0, 4): # the 4 stand for the 4 type of card 
-            for str_value, value in VALUES.items(): 
-                self.deck_of_cards.append(Card(value, "assets/deck_of_cards/" + str(str_value) + "_of_"+ str(TYPES[type_int]) + ".png"))
+        for color in TYPES: # the 4 stand for the 4 type of card 
+            for str_value, value in VALUES.items():  #str_value is a string of the number while value is the int of this value ex:str_value = "two",value = 2
+                self.deck_of_cards.append(Card(value, "assets/deck_of_cards/" + str(str_value) + "_of_"+ str(color) + ".png")) #create all the card with their correct pathing string
     
     def shuffle(self)->None:
         """
