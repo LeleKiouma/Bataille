@@ -18,7 +18,20 @@ class Card(object) :
         self.surf = pygame.transform.smoothscale(pygame.image.load(sprite_pathing).convert_alpha(),(100,152))# load the sprite and scale it down
         
 
-    def __gt__(self,card: object)->bool: 
+    def __gt__(self, card: object)->bool:
+        """
+            Check if the current Card is greater than the
+            other card
+        Args:
+        ------
+            card: (object) the other card
+        Return:
+        ------
+            (bool) True if the value of the current card is greater than the other, 
+                    False otherwise or if the object is not a Card
+        """
+        if not isinstance(card, Card):
+            return False
         if self.value > card.value:
             return True
         return False
