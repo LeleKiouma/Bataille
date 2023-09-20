@@ -1,10 +1,7 @@
 from card import *
+from player import *
 from random import randint, getrandbits
 
-
-
-import doctest
-doctest.testmod()
 
 class Set_of_card(object):
     """
