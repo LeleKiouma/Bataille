@@ -78,8 +78,9 @@ def win_checker(player1: object, player2: object) -> int:
 
 
 pygame.init()                               # initialize pygame 
-screen = pygame.display.set_mode((700,700)) # set the size of the window
+screen = pygame.display.set_mode((700, 700)) # set the size of the window
 pygame.display.set_caption("Jeu de Bataille")   # set the title of the window
+pygame.display.set_icon(pygame.image.load('assets/logo.png')) #set the logo of the game window
 
 show_cards_int = 1              # 0 if we show all the card and see if someone wins,
                                 # 1 if we show no card
