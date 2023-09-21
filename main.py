@@ -2,16 +2,16 @@ import pygame
 from card import *
 from player import *
 from set_of_card import *
-from time import sleep
 
 
-def reveal_card(show_cards_int: int, cards_on_table: list) -> None:
+def reveal_card(show_cards_int: int, cards_on_table: list, player1: object, player2: object) -> None:
     """
     test which card we need to print and print the card when there is a tie at the right to the current
     Args:
         show_cards_int (int): the int of if we need to show all the card or not
         cards_on_table (list): the list of all the card
-
+        player1        (object): the player1's object
+        player2        (object): the player2's object
     """
     for card_pos in range(len(cards_on_table[0])):  # all the card in the first player side
         if card_pos % 2 != 0:                       # if this card is an equality flipped card
@@ -31,34 +31,50 @@ def reveal_card(show_cards_int: int, cards_on_table: list) -> None:
         else :
             screen.blit(cards_on_table[1][card_pos].surf, cards_on_table[1][card_pos].surf.get_rect(center=(350 + 15*card_pos, player2.y_pos_of_cards)))
 
-    screen.blit(card_back_surf,card_back_surf.get_rect(center=(350,player1.y_pos_of_reversed_card)))    # show the card reversed
-    screen.blit(card_back_surf,card_back_surf.get_rect(center=(350,player2.y_pos_of_reversed_card)))    # for both players
+    if len(player1.list_of_cards) != 0:
+        screen.blit(card_back_surf,card_back_surf.get_rect(center=(350,player1.y_pos_of_reversed_card)))    # show the card reversed
+    if len(player2.list_of_cards) != 0:
+        screen.blit(card_back_surf,card_back_surf.get_rect(center=(350,player2.y_pos_of_reversed_card)))    # for both players
     return 
 
-def new_turn(player1: object, player2: object, cards_on_table: list) -> int:
+def new_turn(player1: object, player2: object, cards_on_table: list) -> None:
     """
-    add the next card to the correct list and return if someone have no card in his hand
+    add the next card to the correct list 
+
     Args:
         player1 (object): the player 1
         player2 (object): the player 2
         cards_on_table (list): the list of cards on the card mat
-    Return:
-        (int) the winner of the round: 1 if player one wins, 2 if it's player two, 0 otherwise
     """
     card1 = player1.delete_card()       # remove the card from the deck of the players
     card2 = player2.delete_card()
-    if card1 is not None:
-        cards_on_table[0].append(card1) # add the card to the card that are on the card mat
-        player1.update_score()          # and update the score
-    else:
-        return 2                        # player 1 has no card left: player 2 won
     
-    if card2 is not None:
-        cards_on_table[1].append(card2)
-        player2.update_score()
-    else :
-        return 1                        # player 2 has no card left: player 1 won
-    return 0                            # nobody won
+    cards_on_table[0].append(card1) # add the card to the card that are on the card mat
+    player1.update_score()          # and update the score
+
+    cards_on_table[1].append(card2)
+    player2.update_score()
+    
+    pygame.mixer.Channel(0).play(pygame.mixer.Sound("assets/sound/flip_card.mp3")) #play the sound of a card getting flipped
+
+
+def win_checker(player1: object, player2: object) -> int:
+    """
+    check if there is a win
+    Args:
+        player1 (object): player1 object
+        player2 (object): player2 object
+
+    Returns:
+        int: the game state
+    """
+    if len(player1.list_of_cards) == 0: #if the player doesn't have card 
+        return 2                        # return 2 to say "player 2 win"
+    
+    elif len(player2.list_of_cards) == 0: #if the player doesn't have card 
+        return 1
+    
+    return 0
 
 
 pygame.init()                               # initialize pygame 
@@ -88,16 +104,18 @@ card_back_surf = pygame.transform.smoothscale(pygame.image.load("assets/deck_of_
 sentence_surf = font.render("Tirer une carte", False, (0, 0, 0))    # create the surf for the text in the button
 sentence_rect = sentence_surf.get_rect(center=(550, 550))           # create the rect of the text in the button
 
-play_again_sentence_surf = font.render("to play again press any key",False,(255,255,255)) #create the play again surf
+play_again_sentence_surf = font.render("to play again press any key", False, (255, 255, 255)) #create the play again surf
 play_again_sentence_rect = play_again_sentence_surf.get_rect(center = (350,400)) #create the play again rect
 
 
 player1 = Player(454, 614) # create the player 1
 player2 = Player(246, 86)  # create the player 2
 
+pygame.mixer.Channel(1).play(pygame.mixer.Sound("assets/sound/ambiance.mp3"), -1) #load the music of the ambiance sound and player it infinitly
+pygame.mixer.Channel(1).set_volume(0.3)#set the volume of the music to 30%
+
 deck = Set_of_card()                # create all the card
 deck.split_in_two(player1, player2) # split all the card in two, and distribute them
-
 cards_on_table = [[],[]]    # cards_on_table[0] --> card of player 1 on the table,
                             # cards_on_table[1] --> card of player 2 on the table
 
@@ -113,10 +131,9 @@ while True:
                 exit()        # stop the program
             elif event.type == pygame.MOUSEBUTTONDOWN: # if the mouse is clicked
                 if (450 <= event.pos[0] and event.pos[0] <= 650) and (525 <= event.pos[1] and event.pos[1] <= 575): # the mouse is in the "flip card" button when clicked
+                    game_state = win_checker(player1 ,player2) # the loop end
                     if show_cards_int == 1:     # if we were in the statement that we don't show any card
-                        game_state = new_turn(player1,player2,cards_on_table) # we play a new round
-                        if game_state != 0:     # if someone loose we restart the while true loop
-                            continue            # the loop end
+                        new_turn(player1,player2,cards_on_table) # we play a new round
                         if cards_on_table[0][-1] > cards_on_table[1][-1]: # if the player 1 win
                             for i in range (2):
                                 for card in cards_on_table[i]:
@@ -138,13 +155,13 @@ while True:
                         show_cards_int = 1      # prepare the second round: - hide cards
                         who_win = 0             #                           - nobody won the next round
                     else:
-                        game_state = new_turn(player1, player2, cards_on_table) # new round (this card will be add at an even place on the deck list)
+                        new_turn(player1, player2, cards_on_table) # new round (this card will be add at an even place on the deck list)
                         show_cards_int = 1
-        
+
         screen.blit(background_surf, background_rect)               # draw the background image  
         pygame.draw.rect(screen, (0, 255, 0), (450, 525, 200, 50))  # draw the green rect
         screen.blit(sentence_surf, sentence_rect)                   # write the sentence in the green rect
-        reveal_card(show_cards_int, cards_on_table) 
+        reveal_card(show_cards_int, cards_on_table, player1, player2) 
         
         """ this whole part is only about showing the score with the good color """
         if who_win == 1: # if the player 1 win we show his score in green and the player 2 in red
