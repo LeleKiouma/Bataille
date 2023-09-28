@@ -31,7 +31,7 @@ class Set_of_card(object):
                 player1: (object) the player 1
                 plater2: (object) the player 2
         """
-        if (not isinstance(player1, Player)) or (not isinstance(player2, Player)):
+        if not isinstance(player1, Player) or not isinstance(player2, Player):
             return
         
         player1.list_of_cards.clear() # clear the cards of both players
