@@ -3,7 +3,6 @@ from card import *
 from player import *
 from set_of_card import *
 
-
 def reveal_card(show_cards_int: int, cards_on_table: list, player1: object, player2: object) -> None:
     """
     test which card we need to print and print the card when there is a tie at the right to the current
@@ -104,6 +103,9 @@ card_back_surf = pygame.transform.smoothscale(pygame.image.load("assets/deck_of_
 sentence_surf = font.render("Tirer une carte", False, (0, 0, 0))    # create the surf for the text in the button
 sentence_rect = sentence_surf.get_rect(center=(550, 550))           # create the rect of the text in the button
 
+auto_clicker_surf = font.render("auto-clicker", False, (255, 255, 255))    # create the surf for the text in the button for the auto clicker
+auto_clicker_rect = auto_clicker_surf.get_rect(center=(550,400)) 
+
 play_again_sentence_surf = font.render("to play again press any key", False, (255, 255, 255)) #create the play again surf
 play_again_sentence_rect = play_again_sentence_surf.get_rect(center = (350,400)) #create the play again rect
 
@@ -118,19 +120,20 @@ deck = Set_of_card()                # create all the card
 deck.split_in_two(player1, player2) # split all the card in two, and distribute them
 cards_on_table = [[],[]]    # cards_on_table[0] --> card of player 1 on the table,
                             # cards_on_table[1] --> card of player 2 on the table
-
+auto_clicker = False
+tour = 0
 
 """ ####################### """
 """ ###### MAIN LOOP ###### """
 """ ####################### """
 while True:
     if game_state == 0:# while nobody win the game
-        for event in pygame.event.get(): # if we see any event
+        for event in pygame.event.get() : # if we see any event
             if event.type == pygame.QUIT:# if the event is quitting pygame
                 pygame.quit() # close pygame
                 exit()        # stop the program
-            elif event.type == pygame.MOUSEBUTTONDOWN: # if the mouse is clicked
-                if (450 <= event.pos[0] and event.pos[0] <= 650) and (525 <= event.pos[1] and event.pos[1] <= 575): # the mouse is in the "flip card" button when clicked
+            if event.type == pygame.MOUSEBUTTONDOWN : # if the mouse is clicked
+                if (450 <= event.pos[0] and event.pos[0] <= 650) and (525 <= event.pos[1] and event.pos[1] <= 575) : # the mouse is in the "flip card" button when clicked
                     game_state = win_checker(player1 ,player2) # the loop end
                     if show_cards_int == 1:     # if we were in the statement that we don't show any card
                         new_turn(player1,player2,cards_on_table) # we play a new round
@@ -157,10 +160,42 @@ while True:
                     else:
                         new_turn(player1, player2, cards_on_table) # new round (this card will be add at an even place on the deck list)
                         show_cards_int = 1
-
+                    tour+=1
+                elif (450 <= event.pos[0] and event.pos[0] <= 650) and (375 <= event.pos[1] and event.pos[1] <= 425) : # set auto clicker to true and make the game run really fast
+                        auto_clicker = not auto_clicker
+        if auto_clicker:
+            game_state = win_checker(player1 ,player2) # the loop end
+            if show_cards_int == 1:     # if we were in the statement that we don't show any card
+                new_turn(player1,player2,cards_on_table) # we play a new round
+                if cards_on_table[0][-1] > cards_on_table[1][-1]: # if the player 1 win
+                    for i in range (2):
+                        for card in cards_on_table[i]:
+                            player1.add_card(card)  # add all the cards on te table to player 1's deck
+                    show_cards_int = 0              # set to a statement we show all the card
+                    who_win = 1                     # player 1 win the current round
+                elif cards_on_table[0][-1] < cards_on_table[1][-1]: # do the same but for the player 2
+                    for i in range (2):
+                        for card in cards_on_table[i] :
+                            player2.add_card(card)
+                    show_cards_int = 0
+                    who_win = 2
+                else:                   # if it's a tie 
+                    who_win = 0         # nobody wins
+                    show_cards_int = 2  # set game state to tie
+            elif show_cards_int == 0:   # if we were on the state who show card
+                for i in range(2) :
+                    cards_on_table[i].clear() # clear all the card
+                show_cards_int = 1      # prepare the second round: - hide cards
+                who_win = 0             #                           - nobody won the next round
+            else:
+                new_turn(player1, player2, cards_on_table) # new round (this card will be add at an even place on the deck list)
+                show_cards_int = 1
+            tour+=1
         screen.blit(background_surf, background_rect)               # draw the background image  
         pygame.draw.rect(screen, (0, 255, 0), (450, 525, 200, 50))  # draw the green rect
         screen.blit(sentence_surf, sentence_rect)                   # write the sentence in the green rect
+        pygame.draw.rect(screen, (0, 0, 0), (450, 375, 200, 50))
+        screen.blit(auto_clicker_surf, auto_clicker_rect)
         reveal_card(show_cards_int, cards_on_table, player1, player2) 
         
         """ this whole part is only about showing the score with the good color """
@@ -172,14 +207,13 @@ while True:
         elif who_win == 2: # if the player 2  win we show his score in green and the player 1 in red
             player1_score_surf = font.render("Score: " + str(player1.score), False, (255, 0, 0))
             player1_score_rect = player1_score_surf.get_rect(center=(175, 614))
-            player2_score_surf = font.render("Score : " + str(player2.score), False, (0, 255, 0))
+            player2_score_surf = font.render("Score: " + str(player2.score), False, (0, 255, 0))
             player2_score_rect = player2_score_surf.get_rect(center=(175, 86))
         else: # tie: show all the score in white
-            player1_score_surf = font.render("Score : " + str(player1.score), False, (255, 255, 255))
+            player1_score_surf = font.render("Score: " + str(player1.score), False, (255, 255, 255))
             player1_score_rect = player1_score_surf.get_rect(center=(175, 614))
             player2_score_surf = font.render("Score: " + str(player2.score), False, (255, 255, 255))
             player2_score_rect = player2_score_surf.get_rect(center=(175, 86))
-        
         screen.blit(player1_score_surf, player1_score_rect) # print the score on the screen
         screen.blit(player2_score_surf, player2_score_rect) # print the score on the screen
     
@@ -194,13 +228,15 @@ while True:
                 show_cards_int = 0
                 who_win = 0
                 game_state = 0
+                tour = 0
+                auto_clicker = False
                 cards_on_table[0],cards_on_table[1] = [],[] #clear the list of the cards on table
         screen.blit(background_surf,background_rect) #put the background image
         if game_state == 1 :
-            win_sentences_surf = big_font.render("player 1 win !!!",False,(255,255,255))
+            win_sentences_surf = big_font.render("player 1 win !!! \nEn seulement"+tour+" Tours!! ",False,(255,255,255))
             win_sentences_rect = win_sentences_surf.get_rect(center = (350,150))
         else :
-            win_sentences_surf = big_font.render("player 2 win !!!",False,(255,255,255))
+            win_sentences_surf = big_font.render("player 2 win !!! \nEn seulement"+tour+" Tours!! ",False,(255,255,255))
             win_sentences_rect = win_sentences_surf.get_rect(center = (350,150))
             
         screen.blit(win_sentences_surf,win_sentences_rect)
